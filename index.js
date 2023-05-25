@@ -1,7 +1,8 @@
 const path = require("path");
-const fs = require("fs");
 const yargs = require("yargs/yargs");
 const { hideBin } = require("yargs/helpers");
+const { getPackageName } = require("./lib/name");
+const { readMarkdownFileSync } = require("./lib/file");
 
 // コマンドライン引数を処理
 const { argv } = yargs(hideBin(process.argv))
@@ -17,16 +18,10 @@ console.log();
 
 // コマンドライン引数に応じた処理
 if (argv.name) {
-  const packageStr = fs.readFileSync(path.resolve(__dirname, "package.json"), {
-    encoding: "utf-8",
-  });
-  const package = JSON.parse(packageStr);
-  console.log(package.name);
-} else if (argv.file) {
-  const mdStr = fs.readFileSync(path.resolve(__dirname, argv.file), {
-    encoding: "utf-8",
-  });
-  console.log(mdStr);
-} else {
-  console.log("ERR! No option provided!");
+  const name = getPackageName();
+  console.log(name);
+  process.exit(0);
 }
+
+const markdownStr = readMarkdownFileSync(path.resolve(__dirname, argv.file));
+console.log(markdownStr);
